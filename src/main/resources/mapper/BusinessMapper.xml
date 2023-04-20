@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cinema.mapper.BusinessMapper">
+
+    <resultMap id="BaseResultMap" type="cinema.entity.Business">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="orderForGoodsId" column="order_for_goods_id" jdbcType="BIGINT"/>
+            <result property="movieTicketsId" column="movie_tickets_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,order_for_goods_id,movie_tickets_id
+    </sql>
+</mapper>

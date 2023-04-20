@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cinema.mapper.MovieMapper">
+    <resultMap id="Movie" type="cinema.entity.Movie" autoMapping="true">
+        <result property="releaseDate" column="release_date"/>
+        <result property="differFrom" column="differ_from"/>
+        <result property="filmCover" column="film_cover"/>
+        <collection property="movieGenre" ofType="cinema.entity.MovieGenre">
+            <id property="id" column="movieGenreId"/>
+            <result property="name" column="movieGenre"/>
+        </collection>
+    </resultMap>
+    <!--根据关键字模糊查询（电影名、电影的主类型名称、导演、演员）电影-->
+    <select id="selectMovieByKeyword" resultMap="Movie">
+        SELECT movie.id,movie.name,movie_genre.name AS 'hostMovieGenre',
+        duration,director,good,differ_from,price,release_date,film_cover
+        FROM movie
+        JOIN movie_genre ON movie_genre.id=movie.host_movie_genre_id
+        <if test="keyword !=null">
+            WHERE movie.name LIKE CONCAT('%',#{keyword},'%')
+            OR movie_genre.name LIKE CONCAT('%',#{keyword},'%')
+            OR director LIKE CONCAT('%',#{keyword},'%')
+            OR actor LIKE CONCAT('%',#{keyword},'%')
+        </if>
+    </select>
+    <!--查询指定电影的详细信息-->
+    <select id="selectMovieById" resultMap="Movie">
+        SELECT movie.*,movie_genre.id AS 'movieGenreId',movie_genre.name AS 'movieGenre',
+        (SELECT name FROM movie_genre WHERE id=movie.host_movie_genre_id) AS 'hostMovieGenre'
+        FROM movie_genre_s
+        JOIN movie ON movie.id=movie_genre_s.movie_id
+        JOIN movie_genre ON movie_genre.id=movie_genre_s.movie_genre_id
+        WHERE movie.id=#{movieId}
+    </select>
+    <!--电影类型查询电影-->
+    <select id="selectMovieByMovieGenreId" resultMap="Movie">
+        SELECT movie.id,movie.name,movie_genre.name AS 'hostMovieGenre',film_cover
+        duration,director,good,differ_from,price,release_date
+        FROM movie
+        JOIN movie_genre ON movie_genre.id=movie.host_movie_genre_id
+        WHERE host_movie_genre_id=#{movieGenreId}
+    </select>
+    <!--查询指定用户的喜欢电影-->
+    <select id="selectMovieByUserId" resultMap="Movie">
+        SELECT movie.id,movie.name,movie_genre.name AS 'hostMovieGenre',
+        duration,director,good,differ_from,price,release_date,film_cover
+        FROM `like`
+        JOIN movie ON movie.id=like.movie_id
+        JOIN movie_genre ON movie_genre.id=movie.host_movie_genre_id
+        WHERE user_id=#{userId}
+    </select>
+</mapper>

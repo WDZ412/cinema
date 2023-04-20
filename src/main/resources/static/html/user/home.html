@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../js/vue.global.js"></script>
+    <script src="../../js/element-plus.js"></script>
+    <script src="../../js/axios.js"></script>
+    <script src="../../js/vue-axios.common.min.js"></script>
+</head>
+<body>
+<div>
+    <input type="text"/>
+    <input type="submit" value="搜索"/>
+</div>
+<div>
+    <table title="电影类型">
+        <tr>
+            <td><a>热门</a></td>
+            <td prop="name"><a>类型1</a></td>
+        </tr>
+    </table>
+</div>
+<div id="app">
+        <el-table :data="tableData">
+            <el-table-column prop="name" label="电影名称"></el-table-column>
+        </el-table>
+</div>
+<script>
+    var app = Vue.createApp({
+        data(){
+            return{
+                tableData:undefined
+            }
+        },
+        //Vue实例创建完后调用
+        created(){
+            axios.get("movie/select").then(function (response){
+                alert("进入查询")
+                app.tableData=response.data;
+            })
+        }
+    }).use(ElementPlus,VueAxios,axios).mount("#app");
+</script>
+</body>
+</html>

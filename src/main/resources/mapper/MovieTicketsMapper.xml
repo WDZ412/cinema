@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cinema.mapper.MovieTicketsMapper">
+    <!--根据用户id或电影票id查询电影票详细信息-->
+    <select id="selectMovieTicketsByIdOrUserId" resultType="cinema.entity.MovieTickets">
+    SELECT movie_tickets.id,
+    user.name AS 'userName',
+    movie.name AS 'movieName',
+    cinema_hall.name AS 'cinemaHallName',
+    seat.ids AS 'seatNumber',
+    viewing_equipment.name AS 'viewingEquipmentName',
+    screening_start_time AS 'screeningStartTime',
+    screening_end_time AS 'screeningEndTime',
+    (movie.price+cinema_hall.price) AS 'totalAmount'
+    FROM movie_tickets
+    JOIN user ON user.id=movie_tickets.user_id
+    JOIN cinema_arrangement ON cinema_arrangement.id=movie_tickets.cinema_arrangement_id
+    JOIN movie ON movie.id=cinema_arrangement.movie_id
+    JOIN cinema_hall ON cinema_hall.id=cinema_arrangement.cinema_hall_id
+    JOIN seat ON seat.id=movie_tickets.seat_id
+    JOIN viewing_equipment ON viewing_equipment.id=cinema_hall.viewing_equipment_id
+        <trim prefix="WHERE" prefixOverrides="OR">
+            <if test="movieTicketsId !=null">
+                OR movie_tickets.id=#{movieTicketsId}
+            </if>
+            <if test="userId !=null">
+                OR user.id=#{userId}
+            </if>
+        </trim>
+</select>
+    <!--判断电影票是否可用：0代表未过期、1代表以过期-->
+    <select id="ExpiredOrNot" resultType="Integer">
+        SELECT COUNT(movie_tickets.id)
+        FROM movie_tickets
+        JOIN cinema_arrangement ON cinema_arrangement.id=movie_tickets.cinema_arrangement_id
+        WHERE user_id=#{userId}
+        AND cinema_arrangement.movie_id=#{movieId}
+        AND cinema_arrangement.cinema_hall_id=#{cinemaHallId}
+        AND screening_end_time &lt; NOW()
+    </select>
+</mapper>

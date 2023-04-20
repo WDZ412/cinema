@@ -1,0 +1,18 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /cinema
+spring:
+  mvc:
+    view:
+      prefix: /cinema/html/
+      suffix: .html
+  datasource:
+    url: jdbc:mysql://localhost:3306/cinema?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+mybatis-plus:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: false

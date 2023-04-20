@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cinema.mapper.CinemaArrangementMapper">
+    <resultMap id="CinemaArrangement" type="cinema.entity.CinemaArrangement">
+        <result property="movieId" column="movie_id"/>
+        <result property="cinemaHallId" column="cinemaHall_id"/>
+        <result property="screeningStartTime" column="screening_start_time"/>
+        <result property="screeningEndTime" column="screening_end_time"/>
+        <result property="movieName" column="movieName"/>
+        <result property="cinemaHallName" column="cinemaHallName"/>
+    </resultMap>
+    <!--根据电影id或电影厅id查询排片信息-->
+    <select id="selectCinemaArrangement" resultMap="CinemaArrangement">
+        SELECT cinema_arrangement.*,movie.name AS 'movieName',cinema_hall.name AS 'cinemaHallName'
+        FROM cinema_arrangement
+        JOIN movie ON movie.id=cinema_arrangement.movie_id
+        JOIN cinema_hall ON cinema_hall.id=cinema_arrangement.cinema_hall_id
+        <trim prefix="WHERE" prefixOverrides="OR">
+            <if test="movieId !=null and movieId !=' ' and movieId >0">
+                movie.id=#{movieId}
+            </if>
+            <if test="cinemaHallId !=null and cinemaHallId !=' ' and cinemaHallId >0">
+                cinema_hall_id=#{cinemaHallId}
+            </if>
+        </trim>
+    </select>
+</mapper>

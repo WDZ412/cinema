@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cinema.mapper.CommentOnMapper">
+    <resultMap id="CommentOn" type="cinema.entity.CommentOn" autoMapping="true">
+        <result property="differFrom" column="differ_from"/>
+        <result property="publishTime" column="publish_time"/>
+        <association property="user" javaType="cinema.entity.User">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+<select id="selectCommentOnByMovieId" resultMap="CommentOn">
+    SELECT user.id,user.name,content,publish_time,good,differ_from
+    FROM comment_on
+    JOIN user ON user.id=comment_on.user_id
+    WHERE movie_id=#{movieId}
+</select>
+</mapper>

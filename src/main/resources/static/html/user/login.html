@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../js/vue.global.js"></script>
+    <script src="../../js/element-plus.js"></script>
+    <script src="../../js/axios.js"></script>
+    <script src="../../js/vue-axios.common.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <form>
+    账号：<input type="text" v-model="account"/><br/>
+    密码：<input type="password" v-model="password"/><br/>
+    <input type="submit" @click="onsubmit" value="登录"/>
+    </form>
+</div>
+<script>
+    const app = Vue.createApp({
+        data(){
+            return{
+                account:undefined,
+                password:undefined
+            }
+        },
+        methods:{
+            onsubmit:function (){
+                app.axios.post("/user/login",{account,password}).then(function (response) {
+                    alert("成功")
+                }).catch(function (){
+                    location.href="login.html";
+                })
+            }
+        }
+    }).use(ElementPlus,VueAxios,axios).mount("#app");
+</script>
+</body>
+</html>

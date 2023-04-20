@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cinema.mapper.SeatMapper">
+    <!--根据影厅id放映开始时间放映结束时间获取对应影厅的座位信息-->
+    <select id="selectSeatByCinemaHallIdAndTime" resultType="cinema.entity.Seat">
+        SELECT seat.id,seat.ids,
+        (SELECT COUNT(movie_tickets.id) FROM movie_tickets
+        JOIN cinema_arrangement ON cinema_arrangement.id=movie_tickets.cinema_arrangement_id
+        WHERE seat_id=seat.id
+        AND cinema_arrangement.cinema_hall_id=#{cinemaHallId}
+        AND  screening_start_time=#{screeningStartTime}
+        AND screening_end_time=#{screeningEndTime}) AS 'purchase'
+        FROM seat
+        JOIN cinema_hall ON cinema_hall.id=seat.cinema_hall_id
+        JOIN cinema_arrangement ON cinema_arrangement.cinema_hall_id=cinema_hall.id
+        WHERE cinema_hall.id=#{cinemaHallId}
+        AND screening_start_time=#{screeningStartTime}
+        AND screening_end_time=#{screeningEndTime}
+    </select>
+</mapper>
